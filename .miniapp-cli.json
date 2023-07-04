@@ -1,0 +1,27 @@
+{
+		"env": [
+			{
+				"flavor": "tnd",
+				"entry": "main_tnd.dart"
+			},
+			{
+				"flavor": "sit",
+				"entry": "main_sit.dart"
+			},
+			{
+				"flavor": "preprod",
+				"entry": "main_preprod.dart"
+			},
+			{
+				"flavor": "prod",
+				"entry": "main.dart"
+			}
+		],
+		"url": {
+			"empty": ""
+		},
+		"renderer": {
+			"canvaskit": "canvaskit",
+			"html": "html"
+		}
+	}
