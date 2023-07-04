@@ -44,7 +44,7 @@ func InitConfig() (config Config, err error) {
 			}
 		],
 		"url": {
-			"empty": ""
+			"empty": "/"
 		},
 		"renderer": {
 			"canvaskit": "canvaskit",

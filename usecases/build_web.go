@@ -30,14 +30,18 @@ func BuildAndCheckFiles(env string, buildMode string, renderer string) {
 }
 
 func buildWeb(env string, buildMode string, renderer string) {
+	fmt.Println("Build web ...")
 	var imageDecoding = ""
 	if renderer == "canvaskit" {
+		fmt.Println("Canvas Render")
 		imageDecoding = "--dart-define BROWSER_IMAGE_DECODING_ENABLED=false"
 	}
-	buildCommand := fmt.Sprintf("flutter build web -t lib/main_%s.dart --web-renderer %s --base-href %s %s --release", strings.ToLower(env), renderer, buildMode, imageDecoding)
+	buildCommand := fmt.Sprintf("flutter build web -t lib/%s --web-renderer %s --base-href %s %s --release", strings.ToLower(env), renderer, buildMode, imageDecoding)
 	buildCommandArgs := utils.ParseCommand(buildCommand)
+	fmt.Println(buildCommand)
 
 	if err := utils.RunCommand(buildCommandArgs); err != nil {
+		fmt.Println("Error building web ...")
 		utils.Abort(err.Error())
 	}
 }
@@ -77,7 +81,7 @@ func checkFiles() error {
 func checkFlutterJs() error {
 	path := "build/web/flutter.js"
 	if errFlutterJs := checkFile(path); errFlutterJs != nil {
-		if errFlutterJsUpper := checkFile(fmt.Sprintf("../%s", path)); errFlutterJsUpper != nil {
+		if errFlutterJsUpper := checkFile(path); errFlutterJsUpper != nil {
 			return fmt.Errorf("flutter.js file is missing")
 		}
 	}
@@ -87,7 +91,7 @@ func checkFlutterJs() error {
 func checkIndexHtml() error {
 	path := "build/web/index.html"
 	if errIndexHtml := checkFile(path); errIndexHtml != nil {
-		if errIndexHtmlUpper := checkFile(fmt.Sprintf("../%s", path)); errIndexHtmlUpper != nil {
+		if errIndexHtmlUpper := checkFile(path); errIndexHtmlUpper != nil {
 			return fmt.Errorf("index.html file is missing")
 		}
 	}
