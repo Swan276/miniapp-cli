@@ -103,3 +103,14 @@ func PromptCleanAndRebuild() bool {
 
 	return err == nil
 }
+
+func PromptVersionUpdate() bool {
+	versionUpdatePrompt := promptui.Prompt{
+		Label:     "Would you update version for flutter.js",
+		IsConfirm: true,
+	}
+
+	_, err := versionUpdatePrompt.Run()
+
+	return err == nil
+}

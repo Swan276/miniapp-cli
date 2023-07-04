@@ -30,10 +30,8 @@ func BuildAndCheckFiles(env string, buildMode string, renderer string) {
 }
 
 func buildWeb(env string, buildMode string, renderer string) {
-	fmt.Println("Build web ...")
 	var imageDecoding = ""
 	if renderer == "canvaskit" {
-		fmt.Println("Canvas Render")
 		imageDecoding = "--dart-define BROWSER_IMAGE_DECODING_ENABLED=false"
 	}
 	buildCommand := fmt.Sprintf("flutter build web -t lib/%s --web-renderer %s --base-href %s %s --release", strings.ToLower(env), renderer, buildMode, imageDecoding)
@@ -41,7 +39,6 @@ func buildWeb(env string, buildMode string, renderer string) {
 	fmt.Println(buildCommand)
 
 	if err := utils.RunCommand(buildCommandArgs); err != nil {
-		fmt.Println("Error building web ...")
 		utils.Abort(err.Error())
 	}
 }

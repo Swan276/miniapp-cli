@@ -49,6 +49,10 @@ var buildCmd = &cobra.Command{
 		}
 
 		usecases.BuildAndCheckFiles(environment, buildMode, webRenderer)
+
+		if utils.PromptVersionUpdate() {
+			usecases.UpdateVersion()
+		}
 	},
 }
 
