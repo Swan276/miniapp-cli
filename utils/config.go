@@ -8,18 +8,20 @@ import (
 )
 
 type Config struct {
-	Env      []Env             `json:"env"`
-	Url      map[string]string `json:"url"`
-	Renderer map[string]string `json:"renderer"`
+	Env       []KeyValuePair `json:"env"`
+	Url       []KeyValuePair `json:"url"`
+	Renderer  []KeyValuePair `json:"renderer"`
+	Variables []KeyValuePair `json:"variables"`
 }
 
-type Env struct {
-	Flavor string `json:"flavor"`
-	Entry  string `json:"entry"`
+type KeyValuePair struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 func GetConfig() (config Config, err error) {
 	err = viper.Unmarshal(&config)
+	fmt.Println(config)
 	return
 }
 
@@ -27,30 +29,45 @@ func InitConfig() (config Config, err error) {
 	json := `{
 		"env": [
 			{
-				"flavor": "tnd",
-				"entry": "main_tnd.dart"
+				"key": "tnd",
+				"value": "main_tnd.dart"
 			},
 			{
-				"flavor": "sit",
-				"entry": "main_sit.dart"
+				"key": "sit",
+				"value": "main_sit.dart"
 			},
 			{
-				"flavor": "preprod",
-				"entry": "main_preprod.dart"
+				"key": "preprod",
+				"value": "main_preprod.dart"
 			},
 			{
-				"flavor": "prod",
-				"entry": "main.dart"
+				"key": "prod",
+				"value": "main.dart"
 			}
 		],
-		"url": {
-			"empty": "/"
-		},
-		"renderer": {
-			"canvaskit": "canvaskit",
-			"html": "html"
-		}
-	}`
+		"url": [
+			{
+				"key": "empty",
+				"value": "/"
+			}
+		],
+		"renderer": [
+			{
+				"key": "canvaskit",
+				"value": "canvaskit"
+			},
+			{
+				"key": "html",
+				"value": "html"
+			}
+		],
+		"env_variables": [
+			{
+				"key": "BROWSER_IMAGE_DECODING_ENABLED",
+				"value": "false"
+			}
+		]
+}`
 
 	f, err := os.Create(".miniapp-cli.json")
 	if err != nil {

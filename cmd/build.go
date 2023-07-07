@@ -48,7 +48,14 @@ var buildCmd = &cobra.Command{
 			return
 		}
 
-		usecases.BuildAndCheckFiles(environment, buildMode, webRenderer)
+		chosenEnvVariables := []string{}
+		for _, envVariable := range config.Variables {
+			if utils.PromptEnvVariable(envVariable) {
+				chosenEnvVariables = append(chosenEnvVariables, fmt.Sprintf("%s=%s", envVariable.Key, envVariable.Value))
+			}
+		}
+
+		usecases.BuildAndCheckFiles(environment, buildMode, webRenderer, chosenEnvVariables)
 
 		if utils.PromptVersionUpdate() {
 			usecases.UpdateVersion()

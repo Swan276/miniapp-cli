@@ -17,10 +17,10 @@ func PromptInitConfig() bool {
 	return err == nil
 }
 
-func PromptEnv(envValues []Env) (env string, err error) {
+func PromptEnv(envValues []KeyValuePair) (env string, err error) {
 	envNames := []string{}
 	for _, env := range envValues {
-		envNames = append(envNames, env.Flavor)
+		envNames = append(envNames, env.Key)
 	}
 
 	if len(envNames) == 0 {
@@ -39,18 +39,18 @@ func PromptEnv(envValues []Env) (env string, err error) {
 	}
 
 	for _, v := range envValues {
-		if v.Flavor == envName {
-			return v.Entry, nil
+		if v.Key == envName {
+			return v.Value, nil
 		}
 	}
 	Abort(fmt.Sprintf("Select Environment failed %v\n", err))
 	return
 }
 
-func PromptBuildUrl(buildUrlValues map[string]string) (buildUrl string, err error) {
+func PromptBuildUrl(buildUrlValues []KeyValuePair) (buildUrl string, err error) {
 	buildUrlNames := []string{}
-	for key := range buildUrlValues {
-		buildUrlNames = append(buildUrlNames, key)
+	for _, url := range buildUrlValues {
+		buildUrlNames = append(buildUrlNames, url.Key)
 	}
 
 	if len(buildUrlNames) == 0 {
@@ -67,13 +67,20 @@ func PromptBuildUrl(buildUrlValues map[string]string) (buildUrl string, err erro
 		Abort(fmt.Sprintf("Select Url Build Mode failed %v\n", err))
 		return "", err
 	}
-	return buildUrlValues[buildModeName], nil
+
+	for _, v := range buildUrlValues {
+		if v.Key == buildModeName {
+			return v.Value, nil
+		}
+	}
+	Abort(fmt.Sprintf("Select Environment failed %v\n", err))
+	return
 }
 
-func PromptWebRenderer(rendererValues map[string]string) (webRenderer string, err error) {
+func PromptWebRenderer(rendererValues []KeyValuePair) (webRenderer string, err error) {
 	rendererNames := []string{}
-	for key := range rendererValues {
-		rendererNames = append(rendererNames, key)
+	for _, renderer := range rendererValues {
+		rendererNames = append(rendererNames, renderer.Key)
 	}
 
 	if len(rendererNames) == 0 {
@@ -90,7 +97,24 @@ func PromptWebRenderer(rendererValues map[string]string) (webRenderer string, er
 		Abort(fmt.Sprintf("Select Web Renderer failed %v\n", err))
 		return "", err
 	}
-	return rendererValues[webRendererName], nil
+
+	for _, v := range rendererValues {
+		if v.Key == webRendererName {
+			return v.Value, nil
+		}
+	}
+	Abort(fmt.Sprintf("Select Environment failed %v\n", err))
+	return
+}
+
+func PromptEnvVariable(envVariable KeyValuePair) bool {
+	useEnvVariablePrompt := promptui.Prompt{
+		Label:     fmt.Sprintf("Use Env Variable: %s=%s", envVariable.Key, envVariable.Value),
+		IsConfirm: true,
+	}
+	_, err := useEnvVariablePrompt.Run()
+
+	return err == nil
 }
 
 func PromptCleanAndRebuild() bool {

@@ -10,8 +10,8 @@ import (
 	"github.com/briandowns/spinner"
 )
 
-func BuildAndCheckFiles(env string, buildMode string, renderer string) {
-	buildWeb(env, buildMode, renderer)
+func BuildAndCheckFiles(env string, buildMode string, renderer string, envVariables []string) {
+	buildWeb(env, buildMode, renderer, envVariables)
 	if fileMissingError := checkFiles(); fileMissingError != nil {
 		utils.ErrorMsg(fileMissingError.Error())
 
@@ -21,7 +21,7 @@ func BuildAndCheckFiles(env string, buildMode string, renderer string) {
 			if err := cleanWorkspace(); err != nil {
 				utils.Abort(err.Error())
 			}
-			BuildAndCheckFiles(env, buildMode, renderer)
+			BuildAndCheckFiles(env, buildMode, renderer, envVariables)
 		} else {
 			utils.Info("You can run `flutter clean && flutter pub get` to clean the workspace")
 			utils.Abort("Exiting...")
@@ -29,12 +29,13 @@ func BuildAndCheckFiles(env string, buildMode string, renderer string) {
 	}
 }
 
-func buildWeb(env string, buildMode string, renderer string) {
-	var imageDecoding = ""
-	if renderer == "canvaskit" {
-		imageDecoding = "--dart-define BROWSER_IMAGE_DECODING_ENABLED=false"
+func buildWeb(env string, buildMode string, renderer string, envVariables []string) {
+	var definedEnvVariables = ""
+	for _, v := range envVariables {
+		definedEnvVariables += fmt.Sprintf("--dart-define %s ", v)
 	}
-	buildCommand := fmt.Sprintf("flutter build web -t lib/%s --web-renderer %s --base-href %s %s --release", strings.ToLower(env), renderer, buildMode, imageDecoding)
+	definedEnvVariables = strings.Trim(definedEnvVariables, " ")
+	buildCommand := fmt.Sprintf("flutter build web -t lib/%s --web-renderer %s --base-href %s %s --release", strings.ToLower(env), renderer, buildMode, definedEnvVariables)
 	buildCommandArgs := utils.ParseCommand(buildCommand)
 	fmt.Println(buildCommand)
 
