@@ -61,7 +61,7 @@ func InitConfig() (config Config, err error) {
 				"value": "html"
 			}
 		],
-		"env_variables": [
+		"variables": [
 			{
 				"key": "BROWSER_IMAGE_DECODING_ENABLED",
 				"value": "false"
