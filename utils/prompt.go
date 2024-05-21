@@ -117,6 +117,16 @@ func PromptEnvVariable(envVariable KeyValuePair) bool {
 	return err == nil
 }
 
+func PromptFVM() bool {
+	useFvmPrompt := promptui.Prompt{
+		Label:     "Use FVM: ",
+		IsConfirm: true,
+	}
+	_, err := useFvmPrompt.Run()
+
+	return err == nil
+}
+
 func PromptCleanAndRebuild() bool {
 	cleanAndRebuildPrompt := promptui.Prompt{
 		Label:     "Would you like to clean and rebuild",

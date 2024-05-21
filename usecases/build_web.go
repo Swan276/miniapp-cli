@@ -10,8 +10,8 @@ import (
 	"github.com/briandowns/spinner"
 )
 
-func BuildAndCheckFiles(env string, buildMode string, renderer string, envVariables []string) {
-	buildWeb(env, buildMode, renderer, envVariables)
+func BuildAndCheckFiles(env string, buildMode string, renderer string, envVariables []string, useFVM bool) {
+	buildWeb(env, buildMode, renderer, envVariables, useFVM)
 	if fileMissingError := checkFiles(); fileMissingError != nil {
 		utils.ErrorMsg(fileMissingError.Error())
 
@@ -21,7 +21,7 @@ func BuildAndCheckFiles(env string, buildMode string, renderer string, envVariab
 			if err := cleanWorkspace(); err != nil {
 				utils.Abort(err.Error())
 			}
-			BuildAndCheckFiles(env, buildMode, renderer, envVariables)
+			BuildAndCheckFiles(env, buildMode, renderer, envVariables, useFVM)
 		} else {
 			utils.Info("You can run `flutter clean && flutter pub get` to clean the workspace")
 			utils.Abort("Exiting...")
@@ -29,13 +29,13 @@ func BuildAndCheckFiles(env string, buildMode string, renderer string, envVariab
 	}
 }
 
-func buildWeb(env string, buildMode string, renderer string, envVariables []string) {
+func buildWeb(env string, buildMode string, renderer string, envVariables []string, useFVM bool) {
 	var definedEnvVariables = ""
 	for _, v := range envVariables {
 		definedEnvVariables += fmt.Sprintf("--dart-define %s ", v)
 	}
 	definedEnvVariables = strings.Trim(definedEnvVariables, " ")
-	buildCommand := fmt.Sprintf("flutter build web -t lib/%s --web-renderer %s --base-href %s %s --release", strings.ToLower(env), renderer, buildMode, definedEnvVariables)
+	buildCommand := fmt.Sprintf("%sflutter build web -t lib/%s --web-renderer %s --base-href %s %s --release", _fvm(useFVM), strings.ToLower(env), renderer, buildMode, definedEnvVariables)
 	buildCommandArgs := utils.ParseCommand(buildCommand)
 	fmt.Println(buildCommand)
 
@@ -104,4 +104,11 @@ func checkFile(path string) error {
 		}
 	}
 	return nil
+}
+
+func _fvm(useFVM bool) string {
+	if useFVM {
+		return "fvm "
+	}
+	return ""
 }

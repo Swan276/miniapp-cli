@@ -55,7 +55,9 @@ var buildCmd = &cobra.Command{
 			}
 		}
 
-		usecases.BuildAndCheckFiles(environment, buildMode, webRenderer, chosenEnvVariables)
+		useFVM := utils.PromptFVM()
+
+		usecases.BuildAndCheckFiles(environment, buildMode, webRenderer, chosenEnvVariables, useFVM)
 
 		if utils.PromptVersionUpdate() {
 			usecases.UpdateVersion()
