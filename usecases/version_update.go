@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/Swan276/miniapp-cli/utils"
 	"github.com/tidwall/gjson"
@@ -24,7 +25,8 @@ func UpdateVersion() {
 	// Extract version name and build number from JSON
 	versionName := gjson.Get(string(versionBytes), "version").String()
 	buildNumber := gjson.Get(string(versionBytes), "build_number").String()
-	versionStr := versionName + "b" + buildNumber
+	timestamp := fmt.Sprint(time.Now().UnixMilli())
+	versionStr := versionName + "b" + buildNumber + "t" + timestamp
 
 	// Read and update flutter.js file
 	jsContent, err := os.ReadFile(jsPath)
